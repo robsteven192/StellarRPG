@@ -1,6 +1,3 @@
-//new line bitch
-//another line
-//a third line
 // Load up the discord.js library
 const Discord = require("discord.js");
 
