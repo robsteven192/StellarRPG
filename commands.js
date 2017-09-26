@@ -30,17 +30,21 @@ pingExecute = function (args, user) {
 }
 
 printMessage = function (args, user) {
-    return "I exist " + user.name + args[0];
+    return "I exist " + user.name + " " + args[0];
 };
 
 printMessage2 = function (args, user) {
-    return "I also exist " + user.name + args[0];
+    return "I also exist " + user.name + " " + args[0];
 };
 
 createExecute = function (author) {
     userModule.setupNewUser(author);
     return "Character has been setup for " + author.username;
 };
+
+taken = function (args, user) {
+    return "You already have a character, " + user.name + "!";
+}
 
 setupCommands = function () {
     var commandMap = {};
@@ -62,8 +66,6 @@ setupCommands = function () {
         execute: pingExecute,
         isValid: isCommandValid
     };
-
-    Object.assign(commandMap, userCommandModule.getCommands());
     return commandMap;
 };
 
