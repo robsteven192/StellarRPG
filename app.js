@@ -9,7 +9,7 @@ client.on("ready", () => {
     console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
     // Example of changing the bot's playing game to something useful. `client.user` is what the
     // docs refer to as the "ClientUser".
-    client.user.setGame(`on ${client.guilds.size} servers`);
+    client.user.setGame(`with cool kids.`);
 });
 
 client.on("message", async message => {
@@ -23,10 +23,13 @@ client.on("message", async message => {
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
-    if (commandModule.doesCommandExist(command)) {
-        if (!userModule.doesUserExist(message.author.id)) {
-            userModule.setupNewUser(message.author);
-        }
+    if (!userModule.doesUserExist(message.author.id) && commandModule.isCommandCreate(command)) {
+        message.channel.send(commandModule.createCharacter(message.author));
+    }
+    else if (!userModule.doesUserExist(message.author.id)) {
+        message.channel.send("You have not setup your character. Use s!create");
+    }
+    else if (commandModule.doesCommandExist(command)) {
         var user = userModule.getUser(message.author.id);
         var commandCheck = commandModule.checkValid(command, args, user);
 

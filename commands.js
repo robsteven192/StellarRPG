@@ -1,4 +1,5 @@
 // Command module
+const userModule = require("./users.js");
 
 isCommandValid = function (command, args, user) {
     var checkCommand = {};
@@ -35,6 +36,11 @@ printMessage2 = function (args, user) {
     return "I also exist " + user.name + args[0];
 };
 
+createExecute = function (author) {
+    userModule.setupNewUser(author);
+    return "Character has been setup for " + author.username;
+};
+
 setupCommands = function () {
     var commandMap = {};
     commandMap["test"] = {
@@ -46,7 +52,7 @@ setupCommands = function () {
     commandMap["test2"] = {
         argumentCount: 1,
         wait: 10,
-        execute: printMessage,
+        execute: printMessage2,
         isValid: isCommandValid
     };
     commandMap["ping"] = {
@@ -54,24 +60,41 @@ setupCommands = function () {
         wait: 3,
         execute: pingExecute,
         isValid: isCommandValid
-    }
+    };
     return commandMap;
 };
 
-exports.doesCommandExist = function (command) {
+doesCommandExist = function (command) {
     return commandMap[command] != null;
 };
 
-exports.checkValid = function (command, args, user) {
+checkValid = function (command, args, user) {
     return commandMap[command].isValid(command, args, user);
 };
 
-exports.executeCommand = function (command, args, user) {
+executeCommand = function (command, args, user) {
     return commandMap[command].execute(args, user);
 };
 
-exports.getCommandMap = function () {
+getCommandMap = function () {
     return commandMap;
 };
+
+isCommandCreate = function (command) {
+    return command == "create";
+};
+
+createCharacter = function (author) {
+    return createExecute(author);
+};
+
+module.exports = {
+    doesCommandExist: doesCommandExist,
+    checkValid: checkValid,
+    executeCommand: executeCommand,
+    getCommandMap: getCommandMap,
+    isCommandCreate: isCommandCreate,
+    createCharacter: createCharacter
+}
 
 const commandMap = setupCommands();
