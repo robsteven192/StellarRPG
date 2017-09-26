@@ -66,6 +66,13 @@ setupCommands = function () {
         execute: pingExecute,
         isValid: isCommandValid
     };
+
+    commandMap["create"] = {
+        argumentCount: 0,
+        wait: 0,
+        execute: taken,
+        isValid: isCommandValid
+    }
     return commandMap;
 };
 
@@ -92,6 +99,9 @@ isCommandCreate = function (command) {
 createCharacter = function (author) {
     return createExecute(author);
 };
+
+
+
 
 module.exports = {
     doesCommandExist: doesCommandExist,
