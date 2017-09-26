@@ -2,48 +2,48 @@
 const userModule = require("./users.js");
 const userCommandModule = require('./commands/userCommands.js');
 
-isCommandValid = function (command, args, user) {
+isCommandValid = function (request) {
     var checkCommand = {};
 
-    if (args.length >= commandMap[command].argumentCount) {
-        if (user.commandTimestamps[command] == null) {
-            user.commandTimestamps[command] = { time: Date.now() };
+    if (request.args.length >= commandMap[request.command].argumentCount) {
+        if (request.user.commandTimestamps[request.command] == null) {
+            request.user.commandTimestamps[request.command] = { time: Date.now() };
             checkCommand.isValid = true;
-        } else if (user.commandTimestamps[command].time + (commandMap[command].wait * 1000) < Date.now()) {
-            user.commandTimestamps[command].time = Date.now();
+        } else if (request.user.commandTimestamps[request.command].time + (commandMap[request.command].wait * 1000) < Date.now()) {
+            request.user.commandTimestamps[request.command].time = Date.now();
             checkCommand.isValid = true;
         } else {
-            var timeLeft = user.commandTimestamps[command].time + (commandMap[command].wait * 1000) - Date.now();
+            var timeLeft = request.user.commandTimestamps[request.command].time + (commandMap[request.command].wait * 1000) - Date.now();
             checkCommand.isValid = false;
             checkCommand.errorMessage = "You cant do that yet you son of a bitch! Wait " + Math.ceil(timeLeft / 1000) + " seconds";
         }
     } else {
         checkCommand.isValid = false;
-        checkCommand.errorMessage = "Command arguments are not valid: " + args;
+        checkCommand.errorMessage = "Command arguments are not valid: " + request.args;
     }
 
     return checkCommand;
 };
 
-pingExecute = function (args, user) {
-    return "Pong " + user.name + args[0];
+pingExecute = function (request) {
+    return "Pong " + request.user.name + request.args[0];
 }
 
-printMessage = function (args, user) {
-    return "I exist " + user.name + " " + args[0];
+printMessage = function (request) {
+    return "I exist " + request.user.name + " " + request.args[0];
 };
 
-printMessage2 = function (args, user) {
-    return "I also exist " + user.name + " " + args[0];
+printMessage2 = function (request) {
+    return "I also exist " + request.user.name + " " + request.args[0];
 };
 
 createExecute = function (author) {
     userModule.setupNewUser(author);
-    return "Character has been setup for " + author.username;
+    return "Character has been setup for " + author.username + ". Welcome to the Stellar Discord Universe!";
 };
 
-taken = function (args, user) {
-    return "You already have a character, " + user.name + "!";
+taken = function (request) {
+    return "You already have a character, " + request.user.name + "!";
 }
 
 setupCommands = function () {
@@ -80,12 +80,13 @@ doesCommandExist = function (command) {
     return commandMap[command] != null;
 };
 
-checkValid = function (command, args, user) {
-    return commandMap[command].isValid(command, args, user);
+checkValid = function (request) {
+    return commandMap[request.command].isValid(request);
 };
 
-executeCommand = function (command, args, user) {
-    return commandMap[command].execute(args, user);
+executeCommand = function (request) {
+    
+    return commandMap[request.command].execute(request);
 };
 
 getCommandMap = function () {

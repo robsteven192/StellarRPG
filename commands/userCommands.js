@@ -1,8 +1,8 @@
 // user commands module
 
-statsCommand = function (args, user) {
-    return "Stats for: " + user.name + '\n' +
-           "Level: " + user.level;
+statsCommand = function (request) {
+    return "Stats for: " + request.user.name + '\n' +
+        "Level: " + request.user.level;
 };
 
 exports.getCommands = function () {
