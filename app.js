@@ -7,19 +7,13 @@ const userModule = require("./users.js");
 
 client.on("ready", () => {
     console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
-    // Example of changing the bot's playing game to something useful. `client.user` is what the
-    // docs refer to as the "ClientUser".
-    client.user.setGame(`with cool kids.`);
+    client.user.setGame(`with bitch kids.`);
 });
 
 client.on("message", async message => {
-    //Ignore bot messages
     if (message.author.bot) return;
-    //Ignore messages that do not start with the given prefix
     if (message.content.indexOf(config.prefix) !== 0) return;
-  
-    // command = ping
-    // args = ["Is", "this", "the", "real", "life?"]
+
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
@@ -45,5 +39,4 @@ client.on("message", async message => {
     }
 });
 
-//Execute the login for the Bot
 client.login(config.token);
