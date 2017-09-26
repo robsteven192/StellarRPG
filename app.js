@@ -25,10 +25,15 @@ client.on("message", async message => {
     }
     else if (commandModule.doesCommandExist(command)) {
         var user = userModule.getUser(message.author.id);
-        var commandCheck = commandModule.checkValid(command, args, user);
+        var request = {
+            command: command,
+            user: user,
+            args: args
+        };
+        var commandCheck = commandModule.checkValid(request);
 
         if (commandCheck.isValid) {
-            message.channel.send(commandModule.executeCommand(command, args, user));
+            message.channel.send(commandModule.executeCommand(request));
         } else {
             if (commandCheck.errorMessage != null) {
                 message.channel.send(commandCheck.errorMessage);
