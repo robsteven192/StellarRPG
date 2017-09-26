@@ -7,7 +7,7 @@ const userModule = require("./users.js");
 
 client.on("ready", () => {
     console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
-    client.user.setGame(`with bitch kids.`);
+    client.user.setGame(`with those kids.`);
 });
 
 client.on("message", async message => {
@@ -21,7 +21,7 @@ client.on("message", async message => {
         message.channel.send(commandModule.createCharacter(message.author));
     }
     else if (!userModule.doesUserExist(message.author.id)) {
-        message.channel.send("You have not setup your character. Use s!create");
+        message.channel.send("You have not set up your character. Use s!create");
     }
     else if (commandModule.doesCommandExist(command)) {
         var user = userModule.getUser(message.author.id);
