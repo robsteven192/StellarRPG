@@ -1,5 +1,6 @@
 // Command module
 const userModule = require("./users.js");
+const userCommandModule = require('./commands/userCommands.js');
 
 isCommandValid = function (command, args, user) {
     var checkCommand = {};
@@ -61,6 +62,8 @@ setupCommands = function () {
         execute: pingExecute,
         isValid: isCommandValid
     };
+
+    Object.assign(commandMap, userCommandModule.getCommands());
     return commandMap;
 };
 

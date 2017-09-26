@@ -9,7 +9,8 @@ setupNewUser = function (author) {
     if (!doesUserExist(author.id)) {
         usersMap[author.id] = {
             name: author.username,
-            commandTimestamps: {}
+            commandTimestamps: {},
+            level: 0
         }
     }
 };
