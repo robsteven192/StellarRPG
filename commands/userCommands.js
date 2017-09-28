@@ -2,7 +2,7 @@
 
 statsCommand = function (request) {
     return "Stats for: " + request.user.name + '\n' +
-        "Level: " + request.user.level;
+           "Level: " + request.user.level;
 };
 
 exports.getCommands = function () {
