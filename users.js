@@ -51,7 +51,15 @@ setupNewUser = function (author) {
             "info": {
                 name: author.username,
                 commandTimestamps: {},
-                level: 0
+                inventory: {
+                    "Credits": 100,
+                    "Pickaxe": 1,
+                    "Padded_Lurna_Top": 1,
+                    "Padded_Lurna_Bottom": 1,
+                    "Padded_Lurna_Boots": 1,
+                    "Flickering_Light_Dagger": 1
+                },
+                level: 10
             }
         }
     }

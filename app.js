@@ -10,6 +10,10 @@ client.on("ready", () => {
     client.user.setGame(`with those kids.`);
 });
 
+markupify = function (value) {
+    return "```css\n" + value + "\n```";
+};
+
 client.on("message", async message => {
     if (message.author.bot) return;
     if (message.content.indexOf(config.prefix) !== 0) return;
@@ -21,11 +25,11 @@ client.on("message", async message => {
         console.log(user);
         if (user == null && commandModule.isCommandCreate(command)) {
             userModule.setupNewUser(message.author).then(username => {
-                message.channel.send("Character has been setup for " + username + ". Welcome to the Stellar Discord Universe!");
+                message.channel.send(markupify("Character has been setup for " + username + ". Welcome to the Stellar Discord Universe!"));
             });
         }
         else if (user == null) {
-            message.channel.send("You have not set up your character. Use s!create");
+            message.channel.send(markupify("You have not set up your character. Use s!create"));
         }
         else if (commandModule.doesCommandExist(command)) {
             var request = {
@@ -37,12 +41,12 @@ client.on("message", async message => {
             var commandCheck = commandModule.checkValid(request);
 
             if (commandCheck.isValid) {
-                message.channel.send(commandModule.executeCommand(request));
+                message.channel.send(markupify(commandModule.executeCommand(request)));
             } else {
                 if (commandCheck.errorMessage != null) {
                     message.channel.send(commandCheck.errorMessage);
                 } else {
-                    message.channel.send("An error occured trying to execute the command");
+                    message.channel.send(markupify("An error occured trying to execute the command"));
                 }
             }
         }
