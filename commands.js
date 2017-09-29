@@ -7,11 +7,13 @@ isCommandValid = function (request) {
 
     if (request.args.length >= commandMap[request.command].argumentCount) {
         if (request.user.commandTimestamps[request.command] == null) {
+            checkCommand.isValid = true;
             request.user.commandTimestamps[request.command] = { time: Date.now() };
-            checkCommand.isValid = true;
+            userModule.updateUserCommandTimeStamp(request);
         } else if (request.user.commandTimestamps[request.command].time + (commandMap[request.command].wait * 1000) < Date.now()) {
-            request.user.commandTimestamps[request.command].time = Date.now();
             checkCommand.isValid = true;
+            request.user.commandTimestamps[request.command].time = Date.now();
+            userModule.updateUserCommandTimeStamp(request);
         } else {
             var timeLeft = request.user.commandTimestamps[request.command].time + (commandMap[request.command].wait * 1000) - Date.now();
             checkCommand.isValid = false;
@@ -21,12 +23,11 @@ isCommandValid = function (request) {
         checkCommand.isValid = false;
         checkCommand.errorMessage = "Command arguments are not valid: " + request.args;
     }
-
     return checkCommand;
 };
 
 pingExecute = function (request) {
-    return "Pong " + request.user.name + request.args[0];
+    return "Pong " + request.user.name + " " + request.args[0];
 }
 
 printMessage = function (request) {
@@ -37,12 +38,7 @@ printMessage2 = function (request) {
     return "I also exist " + request.user.name + " " + request.args[0];
 };
 
-createExecute = function (author) {
-    userModule.setupNewUser(author);
-    return "Character has been setup for " + author.username + ". Welcome to the Stellar Discord Universe!";
-};
-
-taken = function (request) {
+characterAlreadyExists = function (request) {
     return "You already have a character, " + request.user.name + "!";
 }
 
@@ -50,7 +46,7 @@ setupCommands = function () {
     var commandMap = {};
     commandMap["test"] = {
         argumentCount: 0,
-        wait: 5,
+        wait: 30,
         execute: printMessage,
         isValid: isCommandValid
     };
@@ -69,7 +65,7 @@ setupCommands = function () {
     commandMap["create"] = {
         argumentCount: 0,
         wait: 0,
-        execute: taken,
+        execute: characterAlreadyExists,
         isValid: isCommandValid
     };
     Object.assign(commandMap, userCommandModule.getCommands());
@@ -97,17 +93,12 @@ isCommandCreate = function (command) {
     return command == "create";
 };
 
-createCharacter = function (author) {
-    return createExecute(author);
-};
-
 module.exports = {
     doesCommandExist: doesCommandExist,
     checkValid: checkValid,
     executeCommand: executeCommand,
     getCommandMap: getCommandMap,
-    isCommandCreate: isCommandCreate,
-    createCharacter: createCharacter
+    isCommandCreate: isCommandCreate
 }
 
 const commandMap = setupCommands();

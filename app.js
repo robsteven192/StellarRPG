@@ -3,12 +3,16 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const commandModule = require("./commands.js");
 const userModule = require("./users.js");
-
+const Promise = require('promise');
 
 client.on("ready", () => {
     console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
     client.user.setGame(`with those kids.`);
 });
+
+markupify = function (value) {
+    return "```css\n" + value + "\n```";
+};
 
 client.on("message", async message => {
     if (message.author.bot) return;
@@ -17,31 +21,36 @@ client.on("message", async message => {
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
-    if (!userModule.doesUserExist(message.author.id) && commandModule.isCommandCreate(command)) {
-        message.channel.send(commandModule.createCharacter(message.author));
-    }
-    else if (!userModule.doesUserExist(message.author.id)) {
-        message.channel.send("You have not set up your character. Use s!create");
-    }
-    else if (commandModule.doesCommandExist(command)) {
-        var user = userModule.getUser(message.author.id);
-        var request = {
-            command: command,
-            user: user,
-            args: args
-        };
-        var commandCheck = commandModule.checkValid(request);
+    userModule.getUser(message.author.id).then(user => {
+        console.log(user);
+        if (user == null && commandModule.isCommandCreate(command)) {
+            userModule.setupNewUser(message.author).then(username => {
+                message.channel.send(markupify("Character has been setup for " + username + ". Welcome to the Stellar Discord Universe!"));
+            });
+        }
+        else if (user == null) {
+            message.channel.send(markupify("You have not set up your character. Use s!create"));
+        }
+        else if (commandModule.doesCommandExist(command)) {
+            var request = {
+                command: command,
+                user: user,
+                args: args,
+                userId: message.author.id
+            };
+            var commandCheck = commandModule.checkValid(request);
 
-        if (commandCheck.isValid) {
-            message.channel.send(commandModule.executeCommand(request));
-        } else {
-            if (commandCheck.errorMessage != null) {
-                message.channel.send(commandCheck.errorMessage);
+            if (commandCheck.isValid) {
+                message.channel.send(markupify(commandModule.executeCommand(request)));
             } else {
-                message.channel.send("An error occured trying to execute the command");
+                if (commandCheck.errorMessage != null) {
+                    message.channel.send(commandCheck.errorMessage);
+                } else {
+                    message.channel.send(markupify("An error occured trying to execute the command"));
+                }
             }
         }
-    }
+    });
 });
 
 client.login(config.token);
